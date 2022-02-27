@@ -1,5 +1,7 @@
 #! /usr/bin/env lua
 
+-- TO DO: DO NOT FORGET TO WRITE THE FUNCTION "getDesktopEnvironment"
+
 function getOSName()
     
     local OSName
@@ -54,6 +56,18 @@ function getShell()
 end
 
 
-
-
-
+function getWindowManager()
+    -- This function has some problems that I couldn't resolve yet
+    -- and needs to be tested on different distributions
+    -- not completely ready for the release.
+    local wmName 
+    local handle = io.popen("wmctrl -m")
+    
+    for line in handle:lines() do
+        if (not (string.find(line,"Name:") == nil)) then
+            -- 6 is the index that the name of WM starts.
+            wmName = string.sub(line,6,string.len(line))
+        end
+    end
+    return wmName
+end
