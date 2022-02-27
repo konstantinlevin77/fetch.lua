@@ -69,5 +69,23 @@ function getWindowManager()
             wmName = string.sub(line,6,string.len(line))
         end
     end
+    handle:close()
     return wmName
+end
+
+function getCPU()
+    
+    local CPUName
+    local handle = io.popen("cat /proc/cpuinfo")
+    for line in handle:lines() do
+        if (not (string.find(line,"model name") == nil)) then
+            -- 14 is the index that the name of CPU starts
+            CPUName = string.sub(line,14,string.len(line))
+            --[[
+            I've used a break here, cause the /proc/cpuinfo file has the same entry more than one, so there's no need to iterate over all of them.
+            ]]--
+            break
+        end
+    end
+    return CPUName
 end
