@@ -1,3 +1,5 @@
+#! /usr/bin/env lua
+
 function getOSName()
     
     local OSName
@@ -13,3 +15,14 @@ function getOSName()
     f:close()
     return OSName
 end
+
+function getKernelVersion()
+    
+    local handle = io.popen("uname -r")
+    local kernelVersion = handle:read()
+    handle:close()
+    return kernelVersion
+end
+
+
+
