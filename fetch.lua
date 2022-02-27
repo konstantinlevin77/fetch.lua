@@ -41,9 +41,19 @@ function getUptime()
     
     -- this regular expression trims the string given.
     uptime = string.gsub(uptime, "^%s*(.-)%s*$", "%1")
-    return uptime
-    
+    return uptime    
 end
+
+function getShell()
+    
+    local shell 
+    local handle = io.popen("echo $SHELL")
+    shell = handle:read()
+    handle:close()
+    return shell
+end
+
+
 
 
 
