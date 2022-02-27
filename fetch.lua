@@ -24,5 +24,26 @@ function getKernelVersion()
     return kernelVersion
 end
 
+function getUptime()
+    
+    local uptime 
+    
+    local handle = io.popen("uptime")
+    local handleResult = handle:read()
+    handle:close()
+    
+    -- I've added +2 because string.find() returns the index that
+    -- the search string starts.
+    local startIndex = string.find(handleResult,"up")+2
+    local endIndex = string.find(handleResult,",")-1
+    
+    uptime = string.sub(handleResult,startIndex,endIndex)
+    
+    -- this regular expression trims the string given.
+    uptime = string.gsub(uptime, "^%s*(.-)%s*$", "%1")
+    return uptime
+    
+end
+
 
 
