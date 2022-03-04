@@ -2,7 +2,14 @@
 
 -- TO DO: DO NOT FORGET TO WRITE THE FUNCTION "getGPU" using lspci.
 
+
+
 function getOSName()
+    --[[
+    This function returns the pretty name of distribution by processing
+    the /etc/os-release file which consists of the information about the
+    distribution.
+    --]]
     
     local OSName
     local f = io.open("/etc/os-release","r")
@@ -20,6 +27,11 @@ end
 
 function getKernelVersion()
     
+    --[[
+    This function returns the kernel version by processing the 
+    output of "uname" utility.
+    --]]
+    
     local handle = io.popen("uname -r")
     local kernelVersion = handle:read()
     handle:close()
@@ -27,6 +39,11 @@ function getKernelVersion()
 end
 
 function getUptime()
+    
+    --[[
+    This function returns the uptime by processing the output
+    of "uptime" utility.
+    --]]
     
     local uptime 
     
@@ -47,6 +64,12 @@ function getUptime()
 end
 
 function getShell()
+    
+    --[[
+    This function returns the current shell's name by processing
+    the value of "$SHELL" environment variable which is mostly
+    declared in Linux systems.
+    --]]
     
     local shell 
     local handle = io.popen("echo $SHELL")
@@ -100,6 +123,11 @@ end
 
 function getCPU()
     
+    --[[
+    This function returns the name of CPU by processing the "/proc/cpuinfo"
+    file which consists of the information about the CPU.
+    --]]
+    
     local CPUName
     local handle = io.popen("cat /proc/cpuinfo")
     for line in handle:lines() do
@@ -137,6 +165,11 @@ end
 
 function getUsedRam()
     
+    --[[
+    This function returns the used ram in MiBs by using
+    the previously defined function getRamValues()
+    --]]
+    
     local vals = getRamValues()
     local counter = 1
     local usedRam
@@ -154,6 +187,11 @@ end
 
 
 function getTotalRam()
+    
+    --[[
+    This function returns the total ram in MiBs by using
+    the previously defined function getRamValues()
+    --]]
     
     local vals = getRamValues()
     local counter = 1
