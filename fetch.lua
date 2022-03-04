@@ -1,6 +1,7 @@
 #! /usr/bin/env lua
 
 -- TO DO: DO NOT FORGET TO WRITE THE FUNCTION "getDesktopEnvironment"
+-- TO DO: DO NOT FORGET TO WRITE THE FUNCTION "getGPU" using lspci.
 
 function getOSName()
     
@@ -55,18 +56,43 @@ function getShell()
     return shell
 end
 
+function getDesktopEnvironment()
+    
+    --[[ 
+    This function returns the current desktop environment.
+    For the very first release, I've decided to use XDG_CURRENT_DESKTOP
+    environment variable which is accesible only on Xorg based systems.
+    
+    I'll figure out a better way which will work both on Wayland and Xorg
+    PR's are welcomed.
+    --]]
+    
+    local desktopEnvironment 
+    local handle = io.popen("echo $XDG_CURRENT_DESKTOP")
+    desktopEnvironment = handle:read()
+    handle:close()
+    return desktopEnvironment
+    
+end
+
 
 function getWindowManager()
-    -- This function has some problems that I couldn't resolve yet
-    -- and needs to be tested on different distributions
-    -- not completely ready for the release.
+    --[[
+    This function returns the name of window manager. This function
+    uses "wmctrl" which is used to manage Xorg window managers and therefore
+    just as the previous function it's going to be working only on Xorg based
+    systems. I'm going to figure out a better way soon.
+    --]]
+    
     local wmName 
-    local handle = io.popen("wmctrl -m")
+    -- I had to redirect stderr onto null device cause I had an 
+    -- error whenever I've used the utility on different distros.
+    local handle = io.popen("wmctrl -m 2> /dev/null")
     
     for line in handle:lines() do
         if (not (string.find(line,"Name:") == nil)) then
-            -- 6 is the index that the name of WM starts.
-            wmName = string.sub(line,6,string.len(line))
+            -- 7 is the index that the name of WM starts.
+            wmName = string.sub(line,7,string.len(line))
         end
     end
     handle:close()
@@ -89,3 +115,4 @@ function getCPU()
     end
     return CPUName
 end
+
