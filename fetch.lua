@@ -1,6 +1,5 @@
 #! /usr/bin/env lua
 
--- TO DO: DO NOT FORGET TO WRITE THE FUNCTION "getDesktopEnvironment"
 -- TO DO: DO NOT FORGET TO WRITE THE FUNCTION "getGPU" using lspci.
 
 function getOSName()
@@ -114,5 +113,61 @@ function getCPU()
         end
     end
     return CPUName
+end
+
+
+function getRamValues()
+    
+    --[[
+    Returns the first line of the output of "free" utility as splitted by spaces. This function is later used by getUsedRam() and getTotalRam()
+    functions to gather information about ram.
+    --]]
+    
+    local handle = io.popen("free -m | grep Mem -C0 | cat")
+    local result = handle:read()
+    handle:close()
+    
+    local values = string.gmatch(result,"%S+")
+    -- This simple regex pattern splits strings by spaces.
+    -- The first value of the table is the Mem: itself, please
+    -- refer to "free" manpage for the detailed information.
+    return values
+end
+
+
+function getUsedRam()
+    
+    local vals = getRamValues()
+    local counter = 1
+    local usedRam
+    
+    for val in vals do
+        -- The first value will be an irrelevant string
+        -- Second will be the total ram
+        if (counter == 3) then
+            usedRam = "" .. val .. " MiB"
+            return usedRam
+        end
+        counter = counter + 1
+    end
+end
+
+
+function getTotalRam()
+    
+    local vals = getRamValues()
+    local counter = 1
+    local totalRam 
+    
+    for val in vals do
+        -- The first value will be an irrelevant string
+        -- Second will be the total ram.
+        if (counter == 2) then
+            totalRam = "" .. val .. " MiB"
+            return totalRam
+        end
+        counter = counter + 1
+    end
+    
 end
 
