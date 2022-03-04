@@ -209,3 +209,15 @@ function getTotalRam()
     
 end
 
+function displayFetchResults()
+    
+    local config = require "fetch.config"
+    print(config.titles.OSTitle)
+    
+end
+
+
+displayFetchResults()
+
+
+
