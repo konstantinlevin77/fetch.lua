@@ -157,7 +157,7 @@ function getRamValues()
     
     local values = string.gmatch(result,"%S+")
     -- This simple regex pattern splits strings by spaces.
-    -- The first value of the table is the Mem: itself, please
+    -- The first value of the table is the "Mem:" itself, please
     -- refer to "free" manpage for the detailed information.
     return values
 end
@@ -177,6 +177,7 @@ function getUsedRam()
     for val in vals do
         -- The first value will be an irrelevant string
         -- Second will be the total ram
+        -- Third will be the ram used.
         if (counter == 3) then
             usedRam = "" .. val .. " MiB"
             return usedRam
@@ -209,15 +210,77 @@ function getTotalRam()
     
 end
 
+function isUserOnGUI()
+    --[[
+    This function returns whether the user is on GUI or not.
+    This is determined with the environment variable $DISPLAY
+    "$DISPLAY" is set on Xorg based systems when there's a GUI running.
+    
+    --]]
+    
+    local handle = io.popen("echo $DISPLAY")
+    local val = handle:read()
+    handle:close()
+    return #val > 0
+    
+end
+
 function displayFetchResults()
+    --[[
+    This function displays the gathered information in a pretty format.
+    Basically, this function is the frontend of the script.
+    Config file is read here, and also an ANSI library is used to change
+    the color of the text.
+    
+    credit: https://luarocks.org/modules/smi11/eansi
+    --]]
     
     local config = require "fetch.config"
-    print(config.titles.OSTitle)
+    local eansi = require "eansi"
+    local color = eansi.toansi "bold bright_green"
+
     
+    if (config.titles.OSTitle) then
+    print(color .. "OS: " .. eansi "" .. getOSName()) 
+    end
+    
+    if (config.titles.kernelVersion) then
+    print(color .. "Kernel: " .. eansi "" .. getKernelVersion())
+    end 
+    
+    if (config.titles.uptime) then
+    print(color .. "Uptime: " .. eansi "" .. getUptime())
+    end
+    
+    if (config.titles.shell) then
+    print(color .. "Shell: " .. eansi "" .. getShell())
+    end 
+    
+    if (isUserOnGUI()) then
+        
+        if (config.titles.desktopEnvironment) then
+            print(color .. "DE: " .. eansi "" .. getDesktopEnvironment())
+        end
+    
+        if (config.titles.getWindowManager) then
+            print(color .. "WM: " .. eansi "" .. getWindowManager())
+        end
+        
+    end
+
+    if (config.titles.cpu) then
+        print(color .. "CPU: " .. eansi "" .. getCPU())
+    end
+    
+    -- There must be the GPU function here
+    
+    if (config.titles.memory) then
+        print(color .. "Memory: " .. eansi "" .. getUsedRam() .. "/" .. getTotalRam())
+    end
+        
 end
 
 
 displayFetchResults()
-
 
 
