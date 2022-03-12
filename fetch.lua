@@ -67,8 +67,7 @@ function getShell()
     
     --[[
     This function returns the current shell's name by processing
-    the value of "$SHELL" environment variable which is mostly
-    declared in Linux systems.
+    the value of "$SHELL" environment variable which is  declared in most Linux systems.
     --]]
     
     local shell 
@@ -262,7 +261,7 @@ function displayFetchResults()
             print(color .. "DE: " .. eansi "" .. getDesktopEnvironment())
         end
     
-        if (config.titles.getWindowManager) then
+        if (config.titles.windowManager) then
             print(color .. "WM: " .. eansi "" .. getWindowManager())
         end
         
