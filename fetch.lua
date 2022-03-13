@@ -258,7 +258,11 @@ function displayFetchResults()
     if (isUserOnGUI()) then
         
         if (config.titles.desktopEnvironment) then
-            print(color .. "DE: " .. eansi "" .. getDesktopEnvironment())
+            -- If user doesn't run a Desktop Environment, it shouldn't be
+            -- shown as blank.
+            if (not (getDesktopEnvironment() == "")) then
+                print(color .. "DE: " .. eansi "" .. getDesktopEnvironment())
+            end
         end
     
         if (config.titles.windowManager) then
